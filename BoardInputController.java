@@ -1,0 +1,49 @@
+package org.yakusoku.board;
+
+import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.yakusoku.model.*;
+
+@WebServlet("/board/input.yaku")
+public class BoardInputController extends HttpServlet {
+	BoardDao dao = new BoardDao();
+	BoardDto dto = new BoardDto();
+//	private static final long serialVersionUID = 1L;
+	
+	
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	
+		
+		// view로 forward
+		String viewName = "/WEB-INF/views/board/input.jsp";
+		RequestDispatcher view = req.getRequestDispatcher(viewName);
+		view.forward(req, resp);
+	}
+	
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// view의 form에서 submit한 데이터를 처리.
+		req.setCharacterEncoding("UTF-8");
+		resp.setCharacterEncoding("UTF-8");
+		resp.setContentType("text/html; charset=UTF-8");
+		
+		String author = req.getParameter("author");
+		String title = req.getParameter("title");
+		String content = req.getParameter("content");
+		
+		BoardDto dto = new BoardDto(author, title, content);
+		dao.insert(dto);
+	
+		resp.sendRedirect(req.getContextPath()+ "/board/list.yaku");
+	
+	}
+}
